@@ -8,12 +8,10 @@ const createChannel = async (req, res) => {
 
     const findChannel = await channelsSchema.find({ username: username });
 
-
     if (findChannel.length) {
         return res.status(404).json({ message: "Username already registered" });
     }
-    
-    
+        
     const channel = new channelsSchema({ name, username, admin_id});
 
     await channel.save();
