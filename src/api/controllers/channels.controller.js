@@ -22,4 +22,10 @@ const createChannel = async (req, res) => {
   }
 };
 
-module.exports = { createChannel };
+const getChannels = async (req, res) => {
+    const chan = await channelsSchema.find()
+
+    res.status(201).json({ message: "All channels", data: chan });
+}
+
+module.exports = { createChannel, getChannels};
