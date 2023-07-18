@@ -1,0 +1,29 @@
+const { Schema, model } = require("mongoose");
+
+const Register = new Schema(
+  {
+    name:{
+      type: String,
+      required: true
+    },
+    username: {
+      type: String, 
+      required: true,
+      min: 3,
+    },
+    password: { 
+      type: String, 
+      required: true,
+      min: 8
+    },
+    balance: {
+      type: Number,
+      default: 0,
+    }},
+  { 
+    timestamps: true 
+  }
+);
+
+
+module.exports = model("Users", Register)
