@@ -1,4 +1,5 @@
 const channelsSchema = require("../models/channels.schema");
+const followersSchema = require("../models/followers.schema");
 const subscripSchema = require("../models/subscrip.schema");
 
 const createChannel = async (req, res) => {
@@ -27,21 +28,25 @@ const createChannel = async (req, res) => {
 const getChannels = async (req, res) => {
   const subsValue = await subscripSchema.find();
 
-  res.status(201).json({ message: "All channels", cost: subsValue  });
+  res.status(201).json({ message: "All channels", cost: subsValue });
 };
 
 const forSubs = async (req, res) => {
   const { channel_id, user_id, month, cost } = req.body;
 
   const channel = await channelsSchema.findById(channel_id);
-  const foundChannelValue = await subscripSchema.find({channel_id: channel.id});
+  const foundChannelValue = await subscripSchema.find({
+    channel_id: channel.id,
+  });
   const channeladminID = channel.admin_id;
   const channelName = channel.name;
-  const values = foundChannelValue.some((value) => value.month === month && value.cost === cost);
-  
-  
+  const values = foundChannelValue.some(
+    (value) => value.month === month && value.cost === cost
+  );
+
   if (channeladminID != user_id) {
-    if (values) return res.status(404).json({ message: "Month allready registered" });
+    if (values)
+      return res.status(404).json({ message: "Month allready registered" });
     res.status(403).json({ message: "Not access" });
   } else {
     await subscripSchema.create({
@@ -52,10 +57,20 @@ const forSubs = async (req, res) => {
       cost,
     });
 
-  res.status(201).json({ message: "Success", channel: channelName });
+    res.status(201).json({ message: "Success", channel: channelName });
   }
 };
 
+const channelFollower = async (req, res) => {
+  const { user_id, channel_id } = req.body;
+  const followers = await followersSchema.find({ channel_id: channel_id });
+  const channel = await channelsSchema.find({ _id: channel_id });
+  const channelAdmin = channel[0].admin_id;
+  if (channelAdmin == user_id) {
+    res.status(200).json({ message: "Your channel followers: ", followers });
+  } else {
+    res.status(402).json({ message: "Not allowed for you" });
+  }
+};
 
-
-module.exports = { createChannel, getChannels, forSubs }
+module.exports = { createChannel, getChannels, forSubs, channelFollower };
