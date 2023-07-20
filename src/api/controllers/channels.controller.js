@@ -62,14 +62,19 @@ const forSubs = async (req, res) => {
 };
 
 const channelFollower = async (req, res) => {
-  const { user_id, channel_id } = req.body;
-  const followers = await followersSchema.find({ channel_id: channel_id });
-  const channel = await channelsSchema.find({ _id: channel_id });
-  const channelAdmin = channel[0].admin_id;
-  if (channelAdmin == user_id) {
-    res.status(200).json({ message: "Your channel followers: ", followers });
-  } else {
-    res.status(402).json({ message: "Not allowed for you" });
+  try {
+    const { user_id, channel_id } = req.body;
+    const followers = await followersSchema.find({ channel_id: channel_id });
+    const channel = await channelsSchema.find({ _id: channel_id });
+    const channelAdmin = channel[0].admin_id;
+    if (channelAdmin == user_id) {
+      res.status(200).json({ message: "Your channel followers: ", followers });
+    } else {
+      res.status(402).json({ message: "Not allowed for you" });
+    }
+    
+  } catch (error) {
+    res.status(500).json({ message:"incorrect user_id or channel_id", error: error.message });
   }
 };
 
