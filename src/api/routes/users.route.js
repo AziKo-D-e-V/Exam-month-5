@@ -7,6 +7,6 @@ const router = Router();
 
 router.post('/account', userBalancePay ) //o'ziga tolov qilish
 router.put('/account', usersSubscrip ) // user pay to channel
-router.get('/account/:id', isActive, userStatus)
+router.get('/account/:id', isActive, userStatus) // user show status 
 
 module.exports = router;

@@ -12,7 +12,7 @@ const usersSubscrip = async (req, res) => {
   const userBalance = await usersSchema.findById(user_id);
   const checkChannel = await subscripSchema.find({ channel_id: channel_id });
   const checkUserFollow = await followersSchema.find({channel_id: channel_id}) 
-  if(checkUserFollow){
+  if(!checkUserFollow){
     const costMonth = checkChannel.some((data) => data.month === month && data.cost === payValue );
   
     const channelBalance = await channelsSchema.findById(channel_id);
@@ -31,14 +31,13 @@ const usersSubscrip = async (req, res) => {
   
       userBalance.status = "active";
   
-      console.log(userBalance.status);
   
       userBalance.expirationDate = new Date(new Date().getTime() + month * 30 * 24 * 60 * 60 * 1000);
   
       userBalance.balance = userBalance.balance - payValue;
       admin_id.balance = admin_id.balance + payValue;
   
-        const newFollower = new followersSchema({startDate: new Date(),endDate: userBalance.expirationDate, user_id, channel_id,status:userBalance.status, pay: payValue, month })
+        const newFollower = new followersSchema({startDate: new Date(), endDate: userBalance.expirationDate, user_id, channel_id,status:userBalance.status, pay: payValue, month })
   
       await session.withTransaction(async () => {
         await userBalance.save();
@@ -49,13 +48,13 @@ const usersSubscrip = async (req, res) => {
       session.endSession();
   
       return res.json({ message: "Successfully payed and subscriped this channel" });
-    
+      
+    }
   }else{
     res.status(402).json({message: "Your account is already following this channel"})
   }
 
 
-  }
 };
 
 const userBalancePay = async (req, res) => {
