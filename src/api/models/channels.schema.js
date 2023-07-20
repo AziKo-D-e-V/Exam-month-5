@@ -12,10 +12,6 @@ const Channel = new Schema(
       unique: true,
       min: 3,
     },
-    balance: {
-      type: Number,
-      default: 0,
-    },
     admin_id: {
         type: mongoose.Types.ObjectId,
         ref:'Users'

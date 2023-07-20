@@ -1,7 +1,5 @@
-const { generateHash } = require("../../libs/bcrypt");
 const channelsSchema = require("../models/channels.schema");
 const subscripSchema = require("../models/subscrip.schema");
-const channelAdminSubs = require("../models/subscrip.schema");
 
 const createChannel = async (req, res) => {
   console.log(req.body);
@@ -27,9 +25,9 @@ const createChannel = async (req, res) => {
 };
 
 const getChannels = async (req, res) => {
-  const chan = await channelsSchema.find();
+  const subsValue = await subscripSchema.find();
 
-  res.status(201).json({ message: "All channels", data: chan });
+  res.status(201).json({ message: "All channels", cost: subsValue  });
 };
 
 const forSubs = async (req, res) => {
@@ -39,7 +37,6 @@ const forSubs = async (req, res) => {
   const foundChannelValue = await subscripSchema.find({channel_id: channel.id});
   const channeladminID = channel.admin_id;
   const channelName = channel.name;
-  
   const values = foundChannelValue.some((value) => value.month === month && value.cost === cost);
   
   
@@ -58,5 +55,7 @@ const forSubs = async (req, res) => {
   res.status(201).json({ message: "Success", channel: channelName });
   }
 };
+
+
 
 module.exports = { createChannel, getChannels, forSubs }
