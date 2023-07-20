@@ -83,20 +83,25 @@ const userBalancePay = async (req, res) => {
 };
 
 const userStatus = async (req, res) => {
-  const {id} = req.params
-
-  const user = await followersSchema.find({user_id: id});
-  if (user) {
-    const channelId = user[0].channel_id
-    const channel = await followersSchema.find({channel_id: channelId});
-    const channelName = await channelsSchema.find({_id: channelId});
-    return res.status(200).json({
-      message: `User status: ${user[0]?.status ? user[0].status : "deactive"}`,ChannelName: channelName[0].name, Channel: channel.length ? channel : "Not found",
-    });
-
-  }
-  else{
-    res.status(404).json({message: "Not followed channels"})
+  try {
+    const {id} = req.params
+  
+    const user = await followersSchema.find({user_id: id});
+    if (user) {
+      const channelId = user[0].channel_id
+      const channel = await followersSchema.find({channel_id: channelId});
+      const channelName = await channelsSchema.find({_id: channelId});
+      return res.status(200).json({
+        message: `User status: ${user[0]?.status ? user[0].status : "deactive"}`,ChannelName: channelName[0].name, Channel: channel.length ? channel : "Not found",
+      });
+  
+    }
+    else{
+      res.status(404).json({message: "Not followed channels"})
+    }
+    
+  } catch (error) {
+  res.status(404).json({message:"Incorrect user_id", error: error.message})    
   }
   
 }
